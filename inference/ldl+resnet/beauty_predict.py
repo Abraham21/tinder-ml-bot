@@ -10,7 +10,7 @@ import dlib
 import os.path
 from keras.models import Sequential
 from keras.applications.resnet50 import ResNet50
-from keras.applications.resnet50 import Dense
+from keras.layers.core import Dense
 from keras.optimizers import Adam
 import pickle
 import numpy as np
@@ -75,7 +75,7 @@ def beauty_predict(path, img):
 
         out = score_mapping(out)
 
-        print(img + " 打分:" + str('%.2f' % (out)))
+        print(img + " Score:" + str('%.2f' % (out)))
         cv2.rectangle(im, (face[0], face[1]), (face[2], face[3]), (0, 255, 0), 3)
         cv2.putText(im, str('%.2f' % (out)), (face[0], face[3]), cv2.FONT_HERSHEY_SIMPLEX,
                     1, (0, 0, 255), 2)
@@ -90,7 +90,7 @@ def beauty_predict(path, img):
 # beauty_predict(parent_path+"/samples/image",'shunli.jpg')
 # beauty_predict(parent_path+"/samples/image",'test1.jpg')
 # beauty_predict(parent_path+"/samples/image",'test2.jpg')
-# beauty_predict(parent_path+"/samples/image",'test3.jpg')
+beauty_predict(parent_path+"/samples/image",'anna.jpg')
 # beauty_predict(parent_path+"/samples/image",'fty1845.jpg')
-beauty_predict(parent_path+"/samples/image",'fty1959.jpg')
+# beauty_predict(parent_path+"/samples/image",'model.jpg')
 # beauty_predict(parent_path+"/samples/image",'jiyou.png')
