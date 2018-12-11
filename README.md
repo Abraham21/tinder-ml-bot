@@ -25,6 +25,8 @@ I have trained Label distribution learning model based on ResNet fine-tuing, you
 6. h5py
 7. dlib
 
+Command to install pynder: pip install git+https://github.com/charliewolf/pynder.git
+
 ## How to use
 1. The trained model files could be downloaded via follow links:
 - [Label distribution learning model](https://pan.baidu.com/s/1d6jBWNxy3eXS5tz3TvCwsw)
