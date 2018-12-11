@@ -17,6 +17,7 @@ import numpy as np
 import cv2
 import os
 from keras.layers import Dropout
+# import tensorflowjs as tfjs
 
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 
@@ -32,6 +33,10 @@ model.add(Dense(5, activation='softmax'))
 model.layers[0].trainable = False
 
 model.load_weights('model-ldl-resnet.h5')
+# model.save('rating.h5')
+
+# tfjs.converters.save_keras_model(model, parent_path)
+# print("Model converted")
 
 def score_mapping(modelScore):
 
@@ -75,7 +80,7 @@ def beauty_predict(path, img):
 
         out = score_mapping(out)
 
-        print(img + " Score:" + str('%.2f' % (out)))
+        print(img + " Score: " + str('%.2f' % (out)))
         cv2.rectangle(im, (face[0], face[1]), (face[2], face[3]), (0, 255, 0), 3)
         cv2.putText(im, str('%.2f' % (out)), (face[0], face[3]), cv2.FONT_HERSHEY_SIMPLEX,
                     1, (0, 0, 255), 2)
@@ -84,13 +89,56 @@ def beauty_predict(path, img):
     cv2.imwrite(ret, im)
     return ret
 
+def want_to_like(img):
+    path = parent_path + "/samples/image"
+    im0 = cv2.imread(path + "/" + img)
+    # image read
 
-# beauty_predict(parent_path+"/samples/image",'fengjie.jpg')
+    if im0.shape[0] > 1280:
+        new_shape = (1280, im0.shape[1] * 1280 / im0.shape[0])
+    elif im0.shape[1] > 1280:
+        new_shape = (im0.shape[0] * 1280 / im0.shape[1], 1280)
+    elif im0.shape[0] < 640 or im0.shape[1] < 640:
+        new_shape = (im0.shape[0] * 2, im0.shape[1] * 2)
+    else:
+        new_shape = im0.shape[0:2]
+
+    im = cv2.resize(im0, (int(new_shape[1]), int(new_shape[0])))
+    dets = cnn_face_detector(im, 0)
+
+    for i, d in enumerate(dets):
+        face = [d.rect.left(), d.rect.top(), d.rect.right(), d.rect.bottom()]
+        croped_im = im[face[1]:face[3], face[0]:face[2], :]
+        resized_im = cv2.resize(croped_im, (224, 224))
+        normed_im = np.array([(resized_im - 127.5) / 127.5])
+
+        pred = model.predict(normed_im)
+        ldList = pred[0]
+        out = 1 * ldList[0] + 2 * ldList[1] + 3 * ldList[2] + 4 * ldList[3] + 5 * ldList[4]
+
+        out = score_mapping(out)
+
+        print(img + " Rating: " + str('%.2f' % (out)))
+        cv2.rectangle(im, (face[0], face[1]), (face[2], face[3]), (0, 255, 0), 3)
+        cv2.putText(im, str('%.2f' % (out)), (face[0], face[3]), cv2.FONT_HERSHEY_SIMPLEX,
+                    1, (0, 0, 255), 2)
+        ret = path + "/output-" + img
+        cv2.imwrite(ret, im)
+        # stop after first face, return like value
+        if out > 6.0:
+            return True
+        else:
+            return False
+    # No faces found
+    print(img + " Rating: N/A")
+    return False
+
+
+# beauty_predict(parent_path+"/samples/image",'abe2.jpg')
 # beauty_predict(parent_path+"/samples/image",'nenghua.jpg')
 # beauty_predict(parent_path+"/samples/image",'shunli.jpg')
 # beauty_predict(parent_path+"/samples/image",'test1.jpg')
 # beauty_predict(parent_path+"/samples/image",'test2.jpg')
-beauty_predict(parent_path+"/samples/image",'anna.jpg')
 # beauty_predict(parent_path+"/samples/image",'fty1845.jpg')
 # beauty_predict(parent_path+"/samples/image",'model.jpg')
 # beauty_predict(parent_path+"/samples/image",'jiyou.png')
