@@ -130,7 +130,7 @@ def want_to_like(img):
         else:
             return False
     # No faces found
-    print(img + " Rating: N/A")
+    print(img + " Rating: N/A (No faces detected)")
     return False
 
 
