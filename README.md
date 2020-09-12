@@ -1,4 +1,6 @@
-# BeautyPredict
+# Tinder ML Bot
+
+[![MLPoster](https://user-images.githubusercontent.com/16629942/92988416-290e0f80-f480-11ea-8ec7-f419657bbe75.png)](https://github.com/Abraham21/tinder-ml-bot/blob/master/MLPoster.pdf)
 
 Facial beauty prediction via deep learning methods based on SCUT-FBP5500 dataset described in the paper [1] and [2]，which listed at the end of this article, have been partially implemented in this project.
 
